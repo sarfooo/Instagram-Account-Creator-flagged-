@@ -8,11 +8,13 @@ import (
 func main() {
 	client := createClient(nil)
 	hashes := getRegistrationHashes(client)
+	fmt.Println(hashes)
 	hashes["eventId"], hashes["inputId"], hashes["markerId"], hashes["instanceId"] = newRegistrationEvent(client, hashes)
 
 	account := Account{
-		Email: "dqeri3nf9en2few@gmail.com",
+		Email: newEmail(client),
 	}
+	fmt.Println(hashes, account.Email)
 	hashes["regContext"], hashes["blokMachineId"] = submitEmail(client, hashes, account)
 	eventId, inputId, marketId, instanceId := sendConfirmationCode(client, hashes, account)
 	

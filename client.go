@@ -11,7 +11,6 @@ func createClient(proxyChannel chan string) tlsClient.HttpClient {
 		tlsClient.WithClientProfile(profiles.Safari_IOS_18_0),
 		tlsClient.WithTimeoutSeconds(60),
 		tlsClient.WithRandomTLSExtensionOrder(),
-		tlsClient.WithNotFollowRedirects(),
 		tlsClient.WithTransportOptions(&tlsClient.TransportOptions{
 			MaxIdleConns:        1,
 			MaxConnsPerHost:     1,
@@ -31,7 +30,7 @@ func getSafariHeaders() map[string][]string {
 		"user-agent": {"Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"},
 		"accept": {"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"},
 		"referer": {"https://www.google.com/"},
-		"sec-fetch-site": {"cross-site"},
+		"sec-fetch-site": {"same-origin"},
 		"sec-fetch-mode": {"navigate"},
 		"sec-fetch-user": {"?1"},
 		"accept-language": {"en-US,en;q=0.9"},
@@ -123,4 +122,30 @@ func getInstagramHeaders() map[string][]string {
             "x-fb-tasos-td-config",
         },
     }
+}
+
+func getChromeHeaders() map[string][]string {
+	return http.Header {
+		"accept":                    {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
+		"accept-language":           {"en-US,en;q=0.9"},
+		"cache-control":             {"max-age=0"},
+		"priority":                  {"u=0, i"},
+		"sec-ch-ua":                 {`"Google Chrome";v="149", "Chromium";v="149", "Not)A;Brand";v="24"`},
+		"sec-ch-ua-mobile":          {"?0"},
+		"sec-ch-ua-platform":        {`"macOS"`},
+		"sec-fetch-dest":            {"document"},
+		"sec-fetch-mode":            {"navigate"},
+		"sec-fetch-site":            {"same-origin"},
+		"sec-fetch-user":            {"?1"},
+		"upgrade-insecure-requests": {"1"},
+		"user-agent":                {"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"},
+	}
+}
+
+func parseCookies(response *http.Response) map[string]string {
+	cookies := make(map[string]string)
+	for _, cookie := range response.Cookies() {
+		cookies[cookie.Name] = cookie.Value
+	}
+	return cookies
 }

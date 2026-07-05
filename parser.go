@@ -6,14 +6,6 @@ import (
 	"io"
 )
 
-func parseCookies(response *http.Response) map[string]string {
-	cookies := make(map[string]string)
-	for _, cookie := range response.Cookies() {
-		cookies[cookie.Name] = cookie.Value
-	}
-	return cookies
-}
-
 func parseInstagramCookies(response *http.Response) map[string]string {
 	cookies := parseCookies(response)
 	for _, key := range []string{"datr", "csrftoken", "ig_did"} {
